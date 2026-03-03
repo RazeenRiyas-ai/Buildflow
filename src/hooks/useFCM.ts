@@ -40,7 +40,7 @@ export const useFCM = () => {
         requestPermissionAndGetToken();
 
         // Listen for foreground messages
-        const unsubscribe = onMessage(messaging, (payload) => {
+        const unsubscribe = onMessage(messaging, (payload: any) => {
             console.log('Message received. ', payload);
             toast.info(payload.notification?.title || 'New Notification', {
                 description: payload.notification?.body,
