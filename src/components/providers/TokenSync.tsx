@@ -3,9 +3,11 @@
 import { useAuth } from '@clerk/nextjs';
 import { useEffect } from 'react';
 import { api } from '@/lib/api';
+import { useFCM } from '@/hooks/useFCM';
 
 export function TokenSync() {
     const { getToken, isSignedIn } = useAuth();
+    useFCM();
 
     useEffect(() => {
         const syncToken = async () => {

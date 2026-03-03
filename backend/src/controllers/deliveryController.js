@@ -106,8 +106,23 @@ const updateDeliveryStatus = async (req, res) => {
             status: status === 'COMPLETED' ? 'DELIVERED' : 'SHIPPED',
             message
         });
+
+        // Push notification to customer
+        const orderData = await prisma.order.findUnique({
+            where: { id: delivery.orderId },
+            include: { customer: true }
+        });
+
+        if (orderData && orderData.customer && orderData.customer.fcmToken) {
+            require('../services/notificationService').sendPushNotification(
+                orderData.customer.fcmToken,
+                "Delivery Update",
+                message,
+                { orderId: delivery.orderId, status }
+            );
+        }
     } catch (e) {
-        console.error("Socket emit failed", e);
+        console.error("Socket or push notification emit failed", e);
     }
 
     res.json(updated);

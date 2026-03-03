@@ -35,7 +35,22 @@ const updateProfile = async (req, res) => {
     res.json(profile);
 };
 
+const updateFcmToken = async (req, res) => {
+    const userId = req.user.id;
+    const { token } = req.body;
+
+    if (!token) return res.status(400).json({ error: 'Token is required' });
+
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { fcmToken: token }
+    });
+
+    res.json({ success: true, message: 'FCM token updated successfully' });
+};
+
 module.exports = {
     getProfile,
-    updateProfile
+    updateProfile,
+    updateFcmToken
 };
